@@ -1,0 +1,17 @@
+{
+    "name": "fabianosl1/promobit-products-api",
+    "description": "Products api",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "fabiano de sousa lima",
+            "email": "fabianosl@ufrrj.br"
+        }
+    ],
+    "require": {}
+}
