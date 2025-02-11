@@ -1,0 +1,10 @@
+services:
+  database:
+    image: postgres:17
+    container_name: products-database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: local
+      POSTGRES_USER: local
+      POSTGRES_DB: products
