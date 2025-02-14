@@ -10,12 +10,15 @@ return function (Container $container) {
     $router = Router::getInstance();
     $router->setContainer($container);
 
-    $router->get("/products", function () {
-
+    $router->get("/products/:id", function () {
         $service = Router::getInstance()->getContainer()->get(ProductService::class);
-        RouterUtils::makeResponse(["message" => $service->findById(1)]);
+        RouterUtils::makeResponse(["message" => ":id"]);
     });
 
+    $router->get("/products", function () {
+        $service = Router::getInstance()->getContainer()->get(ProductService::class);
+        RouterUtils::makeResponse(["message" => "products"]);
+    });
     return $router;
 };
 

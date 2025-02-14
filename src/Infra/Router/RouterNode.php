@@ -20,10 +20,14 @@ class RouterNode
 
     private array $dispatcher;
 
+    private bool $containsDynamic;
+
     public function __construct($path)
     {
         $this->pathPart = $path;
         $this->nodes = [];
+        $this->dispatcher = [];
+        $this->containsDynamic = false;
     }
 
     private function addDispatcher(string $method, callable $dispatcher): void
@@ -39,35 +43,48 @@ class RouterNode
 
         $current = $this;
 
-        foreach (explode('/', $path) as $pathPart) {
+        foreach ($this->explodePath($path) as $pathPart) {
             $next = $current->nodes[$pathPart];
+
+            if (str_contains($pathPart, ':')) {
+                $current->containsDynamic = true;
+            }
+
             if ($next !== null) {
                 $current = $next;
             } else {
                 $current->nodes[$pathPart] = new RouterNode($pathPart);
                 $current = $current->nodes[$pathPart];
-                $current->addDispatcher($method, $dispatcher);
             }
         }
+
+        $current->addDispatcher($method, $dispatcher);
     }
 
     public function match(string $path, string $method): ?callable
     {
         $current = $this;
+        $paths = $this->explodePath($path);
+        $total = count($paths);
+        $index = 0;
 
-        foreach (explode('/', $path) as $pathPart) {
+        foreach ($paths as $pathPart) {
             $next = $current->nodes[$pathPart];
 
-            if ($next !== null) {
-                $current = $next;
-                continue;
+            if ($current->containsDynamic && $index < $total) {
+                $next = reset($current->nodes);
             }
 
-            if ($current->pathPart !== $pathPart) {
-                return null;
-            }
+            $current = $next;
         }
 
         return $current->dispatcher[$method];
+    }
+
+    private function explodePath(string $path): array
+    {
+        return array_filter(explode('/', $path), function ($item) {
+            return $item !== '';
+        });
     }
 }
