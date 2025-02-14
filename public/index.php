@@ -1,8 +1,8 @@
 <?php
 require __DIR__ . "/../vendor/autoload.php";
 
-$di = require __DIR__ . "/../src/Infra/di.php";
-$routes = require __DIR__ . "/../src/Infra/routes.php";
+$di = require __DIR__ . "/../src/di.php";
+$routes = require __DIR__ . "/../src/routes.php";
 
 $container = $di();
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Domain;
+namespace App\Entities;
 
 class Product
 {
-    public string|null $id = null;
+    public int|null $id = null;
 
     public string $name;
 

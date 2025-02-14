@@ -1,7 +1,5 @@
 <?php
-namespace App\Infra\Router;
-
-use DI\Container;
+namespace Router;
 
 class Router
 {

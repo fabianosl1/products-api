@@ -1,7 +1,6 @@
 <?php
-namespace Infra;
-use App\Application\Services\ProductService;
-use App\Infra\Controller\ProductController;
+use App\Services\ProductService;
+use App\Controllers\ProductController;
 use \DI\Container;
 
 return function () {
