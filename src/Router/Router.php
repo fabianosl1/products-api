@@ -64,12 +64,16 @@ class Router
             "params" => $this->getParams($query)
         ]);
 
-        RouterUtils::makeResponse($response);
+        RouterUtils::makeResponse($response->getBody(), $response->getStatus());
     }
 
-    private function getParams(string $query): array
+    private function getParams(string|null $query): array
     {
         $params = [];
+
+        if ($query === null) {
+            return $params;
+        }
 
         foreach (explode("&", $query) as $param) {
             $param = trim($param);
