@@ -1,5 +1,16 @@
 <?php
 
+/*
+ * Implementação baseada no framework Hono.js (primeiros commits)
+ * 
+ * As rotas são construidas em uma estrutura de arvore, cada nó possui:
+ *  - parte do path
+ *  - map <verbo http>:<handler>
+ *  - sub nodes
+ *
+ * dado um path a função match encontra o RouterNode 
+ * adequado e retorna o handler de acordo com o verbo http
+ */
 class RouterNode
 {
     private string $pathPart;
