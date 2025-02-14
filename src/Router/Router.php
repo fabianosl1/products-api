@@ -47,8 +47,10 @@ class Router
 
     public function handler(): void
     {
-        $path = $_SERVER['REQUEST_URI'];
+        $uri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
+
+        [$path, $query] = explode('?', $uri);
 
         [$handler, $variables] = $this->node->match($path, $method);
 
@@ -58,10 +60,29 @@ class Router
 
         $response = $handler([
             "body" => RouterUtils::getBody(),
-            "variables" => $variables
+            "variables" => $variables,
+            "params" => $this->getParams($query)
         ]);
 
         RouterUtils::makeResponse($response);
+    }
+
+    private function getParams(string $query): array
+    {
+        $params = [];
+
+        foreach (explode("&", $query) as $param) {
+            $param = trim($param);
+
+            if (empty($param)) {
+                continue;
+            }
+
+            [$key, $value] = explode("=", $param);
+
+            $params[$key] = $value;
+        }
+        return $params;
     }
 }
 
