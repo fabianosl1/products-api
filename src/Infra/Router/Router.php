@@ -8,8 +8,6 @@ class Router
     private RouterNode $node;
     private static Router|null $instance = null;
 
-    private Container|null $container = null;
-
     private function __construct()
     {
         $this->node = new RouterNode('/');
@@ -22,16 +20,6 @@ class Router
         }
 
         return self::$instance;
-    }
-
-    public function getContainer(): Container
-    {
-        return $this->container;
-    }
-
-    public function setContainer(Container $container): void
-    {
-        $this->container = $container;
     }
 
     public function post(string $path, callable $dispatcher): void
@@ -64,13 +52,18 @@ class Router
         $path = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
 
-        $handler = $this->node->match($path, $method);
+        [$handler, $variables] = $this->node->match($path, $method);
 
         if ($handler === null) {
             RouterUtils::makeResponse(["message" => "router not found"], 404);
         }
 
-        $handler();
+        $response = $handler([
+            "body" => RouterUtils::getBody(),
+            "variables" => $variables
+        ]);
+
+        RouterUtils::makeResponse($response);
     }
 }
 

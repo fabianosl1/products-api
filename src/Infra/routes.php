@@ -1,24 +1,17 @@
 <?php
 namespace App\Infra;
 
-use App\Application\Services\ProductService;
 use App\Infra\Router\Router;
-use App\Infra\Router\RouterUtils;
+use App\Infra\Controller\ProductController;
 use DI\Container;
 
 return function (Container $container) {
+    $productController = $container->get(ProductController::class);
+
     $router = Router::getInstance();
-    $router->setContainer($container);
 
-    $router->get("/products/:id", function () {
-        $service = Router::getInstance()->getContainer()->get(ProductService::class);
-        RouterUtils::makeResponse(["message" => ":id"]);
-    });
+    $router->post("/:id/:transaction", [$productController, 'get']);
 
-    $router->get("/products", function () {
-        $service = Router::getInstance()->getContainer()->get(ProductService::class);
-        RouterUtils::makeResponse(["message" => "products"]);
-    });
     return $router;
 };
 

@@ -61,8 +61,9 @@ class RouterNode
         $current->addDispatcher($method, $dispatcher);
     }
 
-    public function match(string $path, string $method): ?callable
+    public function match(string $path, string $method): array
     {
+        $variables = [];
         $current = $this;
         $paths = $this->explodePath($path);
         $total = count($paths);
@@ -71,14 +72,19 @@ class RouterNode
         foreach ($paths as $pathPart) {
             $next = $current->nodes[$pathPart];
 
-            if ($current->containsDynamic && $index < $total) {
-                $next = reset($current->nodes);
+            if ($current->containsDynamic) {
+                $child = reset($current->nodes);
+                $variables[substr($child->pathPart, 1)] = $pathPart;
+
+                if ($index < $total) {
+                    $next = $child;
+                }
             }
 
             $current = $next;
         }
 
-        return $current->dispatcher[$method];
+        return [$current->dispatcher[$method], $variables];
     }
 
     private function explodePath(string $path): array
