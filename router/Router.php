@@ -1,16 +1,49 @@
 <?php
-class Router {
-    private Node $node;
+class Router
+{
+    private RouterNode $node;
+    private static Router|null $instance = null;
 
-    public function __construct() {
-        $this->node = new Node('/');
+    private function __construct()
+    {
+        $this->node = new RouterNode('/');
     }
 
-    public function post(string $path, callable $dispatcher): void {
+    public static function getInstance(): Router
+    {
+        if (self::$instance === null) {
+            self::$instance = new Router();
+        }
+
+        return self::$instance;
+    }
+    public function post(string $path, callable $dispatcher): void
+    {
         $this->node->insert($path, 'POST', $dispatcher);
     }
 
-    public function handler(string $path, string $method): void {
+    public function get(string $path, callable $dispatcher): void
+    {
+        $this->node->insert($path, 'GET', $dispatcher);
+    }
+
+    public function put(string $path, callable $dispatcher): void
+    {
+        $this->node->insert($path, 'PUT', $dispatcher);
+    }
+
+    public function patch(string $path, callable $dispatcher): void
+    {
+        $this->node->insert($path, 'PATCH', $dispatcher);
+    }
+
+    public function delete(string $path, callable $dispatcher): void
+    {
+        $this->node->insert($path, 'DELETE', $dispatcher);
+    }
+
+    public function handler(string $path, string $method): void
+    {
         $handler = $this->node->match($path, $method);
 
         if ($handler === null) {
@@ -21,60 +54,3 @@ class Router {
     }
 }
 
-class Node {
-    private string $pathPart;
-
-    private array $nodes;
-
-    private array $dispatcher;
-
-    public function __construct($path) {
-        $this->pathPart = $path;
-        $this->nodes = array();
-    }
-
-    private function addDispatcher(string $method, callable $dispatcher): void {
-        $this->dispatcher[$method] = $dispatcher;
-    }
-
-    public function insert(string $path, string $method, callable $dispatcher): void {
-        if ($path == '/') {
-            $this->addDispatcher($method, $dispatcher);
-        }
-
-        $current = $this;
-
-        foreach (explode('/', $path) as $pathPart) {
-            $next = $current->nodes[$pathPart];
-            if ($next !== null) {
-                $current = $next;
-            } else {
-                $current->nodes[$pathPart] = new Node($pathPart);
-                $current = $current->nodes[$pathPart];
-                $current->addDispatcher($method, $dispatcher);
-            }
-        }
-    }
-
-    public function match(string $path, string $method): ?callable {
-        $current = $this;
-
-        if ($path == '/' || empty($path)) {
-
-        }
-        foreach (explode('/', $path) as $pathPart) {
-            $next = $current->nodes[$pathPart];
-
-            if ($next !== null) {
-                $current = $next;
-                continue;
-            }
-
-            if ($current->pathPart !== $pathPart) {
-                return null;
-            }
-        }
-
-        return $current->dispatcher[$method];
-    }
-}
