@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Ports\Output;
-use App\Domain\Product;
+namespace App\Domain;
 
-interface ProductRepositoryPort
+interface ProductRepository
 {
     public function save(Product $product): void;
     public function findByName(string $name): ?Product;

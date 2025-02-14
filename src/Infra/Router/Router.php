@@ -1,8 +1,14 @@
 <?php
+namespace App\Infra\Router;
+
+use DI\Container;
+
 class Router
 {
     private RouterNode $node;
     private static Router|null $instance = null;
+
+    private Container|null $container = null;
 
     private function __construct()
     {
@@ -17,6 +23,17 @@ class Router
 
         return self::$instance;
     }
+
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
+
+    public function setContainer(Container $container): void
+    {
+        $this->container = $container;
+    }
+
     public function post(string $path, callable $dispatcher): void
     {
         $this->node->insert($path, 'POST', $dispatcher);
@@ -42,8 +59,11 @@ class Router
         $this->node->insert($path, 'DELETE', $dispatcher);
     }
 
-    public function handler(string $path, string $method): void
+    public function handler(): void
     {
+        $path = $_SERVER['REQUEST_URI'];
+        $method = $_SERVER['REQUEST_METHOD'];
+
         $handler = $this->node->match($path, $method);
 
         if ($handler === null) {

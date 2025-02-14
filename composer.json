@@ -13,5 +13,7 @@
             "email": "fabianosl@ufrrj.br"
         }
     ],
-    "require": {}
+    "require": {
+        "php-di/php-di": "^7.0"
+    }
 }

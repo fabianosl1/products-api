@@ -1,4 +1,6 @@
 <?php
+namespace App\Infra\Router;
+
 class RouterUtils
 {
     public static function getBody()

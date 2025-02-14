@@ -1,9 +1,11 @@
 <?php
-require_once '../router/index.php';
+require __DIR__ . "/../vendor/autoload.php";
 
+$di = require __DIR__ . "/../src/Infra/di.php";
+$routes = require __DIR__ . "/../src/Infra/routes.php";
 
-$path = $_SERVER['REQUEST_URI'];
-$method = $_SERVER['REQUEST_METHOD'];
+$container = $di();
 
-$router = Router::getInstance();
-$router->handler($path, $method);
+$router = $routes($container);
+
+$router->handler();

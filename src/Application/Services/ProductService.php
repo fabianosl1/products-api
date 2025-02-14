@@ -1,15 +1,16 @@
 <?php
-namespace App\Services;
+namespace App\Application\Services;
 use App\Domain\Product;
-use App\Ports\Input\ProductServicePort;
-use App\Ports\Output\ProductRepositoryPort;
+use App\Domain\ProductRepository;
 
-class ProductService implements ProductServicePort  {
+class ProductService
+{
 
-    private ProductRepositoryPort $productRepository;
+    private ProductRepository $productRepository;
 
-    public function __construct(ProductRepositoryPort $productRepository) {
-        $this->productRepository = $productRepository;
+    public function __construct()
+    {
+
     }
 
     public function save(Product $product): void
@@ -22,5 +23,9 @@ class ProductService implements ProductServicePort  {
         }
 
         $this->productRepository->save($product);
+    }
+
+    public function findById(int $id): string {
+        return "DI work";
     }
 }

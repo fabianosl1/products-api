@@ -1,4 +1,5 @@
 <?php
+namespace App\Infra\Router;
 
 /*
  * Implementação baseada no framework Hono.js (primeiros commits)
