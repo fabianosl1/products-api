@@ -8,7 +8,7 @@ use App\Services\ProductService;
 use App\Dtos\Product\ProductResponse;
 use App\Dtos\Response;
 
-class ProductController
+class ProductController implements BaseController
 {
     private ProductService $productService;
 
