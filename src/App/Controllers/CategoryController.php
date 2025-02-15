@@ -5,8 +5,9 @@ use App\Dtos\Category\CategoryResponse;
 use App\Dtos\Category\CreateCategoryRequest;
 use App\Dtos\Category\ListCategoryResponse;
 use App\Dtos\Category\UpdateCategoryRequest;
-use App\Dtos\Response;
 use App\Services\CategoryService;
+use Router\Request;
+use Router\Response;
 
 class CategoryController implements BaseController
 {
@@ -16,42 +17,42 @@ class CategoryController implements BaseController
         $this->categoryService = $categoryService;
     }
 
-    public function create($request): Response
+    public function create(Request $request): Response
     {
-        $body = new CreateCategoryRequest($request["body"]);
+        $body = new CreateCategoryRequest($request->getBody());
         $category = $this->categoryService->create($body);
 
         $response = new CategoryResponse($category);
         return new Response($response);
     }
 
-    public function get($request): Response
+    public function get(Request $request): Response
     {
-        $category = $this->categoryService->findById($request["variables"]["id"]);
+        $category = $this->categoryService->findById($request->getVariable("id"));
 
         $response = new CategoryResponse($category);
         return new Response($response);
     }
 
-    public function update($request): Response
+    public function update(Request $request): Response
     {
-        $body = new UpdateCategoryRequest($request["body"]);
-        $category = $this->categoryService->update($request["variables"]["id"], $body);
+        $body = new UpdateCategoryRequest($request->getBody());
+        $category = $this->categoryService->update($request->getVariable("id"), $body);
 
         $response = new CategoryResponse($category);
         return new Response($response);
     }
 
-    public function list($request): Response
+    public function list(Request $request): Response
     {
         $categories = $this->categoryService->findAll();
         $response = new ListCategoryResponse($categories);
         return new Response($response);
     }
 
-    public function delete($request): Response
+    public function delete(Request $request): Response
     {
-        $category = $this->categoryService->delete($request["variables"]["id"]);
+        $category = $this->categoryService->delete($request->getVariable("id"));
         $response = new CategoryResponse($category);
         return new Response($response);
     }

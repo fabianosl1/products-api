@@ -1,7 +1,8 @@
 <?php
 namespace App\Controllers;
 
-use App\Dtos\Response;
+use Router\Response;
+use Router\Request;
 use App\Dtos\Tag\CreateTagRequest;
 use App\Dtos\Tag\ListTagResponse;
 use App\Dtos\Tag\TagResponse;
@@ -17,24 +18,24 @@ class TagController implements BaseController
         $this->tagService = $tagService;
     }
 
-    public function create($request): Response
+    public function create(Request $request): Response
     {
-        $body = new CreateTagRequest($request["body"]);
+        $body = new CreateTagRequest($request->getBody());
         $tag = $this->tagService->create($body);
 
         $response = new TagResponse($tag);
         return new Response($response, 201);
     }
 
-    public function get($request): Response
+    public function get(Request $request): Response
     {
-        $tag = $this->tagService->findById($request["variables"]["id"]);
+        $tag = $this->tagService->findById($request->getVariable("id"));
 
         $response = new TagResponse($tag);
         return new Response($response, 200);
     }
 
-    public function list($request): Response
+    public function list(Request $request): Response
     {
         $tags = $this->tagService->findAll();
         $response = new ListTagResponse($tags);
@@ -42,20 +43,20 @@ class TagController implements BaseController
         return new Response($response);
     }
 
-    public function update($request): Response
+    public function update(Request $request): Response
     {
         $tag = $this->tagService->update(
-            $request["variables"]["id"],
-            new UpdateTagRequest($request["body"])
+            $request->getVariable("id"),
+            new UpdateTagRequest($request->getBody())
         );
 
         $response = new TagResponse($tag);
         return new Response($response);
     }
 
-    public function delete($request): Response
+    public function delete(Request $request): Response
     {
-        $tag = $this->tagService->delete($request["variables"]["id"]);
+        $tag = $this->tagService->delete($request->getVariable("id"));
         $response = new TagResponse($tag);
 
         return new Response($response);

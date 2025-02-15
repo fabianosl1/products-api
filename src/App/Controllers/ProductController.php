@@ -6,7 +6,8 @@ use App\Dtos\Product\ListProductResponse;
 use App\Exceptions\HttpException;
 use App\Services\ProductService;
 use App\Dtos\Product\ProductResponse;
-use App\Dtos\Response;
+use Router\Response;
+use Router\Request;
 
 class ProductController implements BaseController
 {
@@ -17,37 +18,37 @@ class ProductController implements BaseController
         $this->productService = $productService;
     }
 
-    public function create($request): Response
+    public function create(Request $request): Response
     {
-        $body = new CreateProductRequest($request["body"]);
+        $body = new CreateProductRequest($request->getBody());
         $product = $this->productService->create($body);
         $response = new ProductResponse($product);
 
         return new Response($response, 201);
     }
 
-    public function get($request): Response
+    public function get(Request $request): Response
     {
-        $product = $this->productService->findById($request["variables"]["id"]);
+        $product = $this->productService->findById($request->getVariable("id"));
         $response = new ProductResponse($product);
         return new Response($response);
     }
 
-    public function update($request): Response
+    public function update(Request $request): Response
     {
         $product = $this->productService->update(
-            $request["variables"]["id"],
-            $request["body"]
+            $request->getVariable("id"),
+            $request->getBody()
         );
 
         $response = new ProductResponse($product);
         return new Response($response);
     }
 
-    public function list($request): Response
+    public function list(Request $request): Response
     {
         $available = ["name", "price", "likes"];
-        $orderBy = $request["params"]["orderBy"] ?? "name";
+        $orderBy = $request->getQuery("orderBy") ?? "name";
 
         if (!in_array($orderBy, $available, true)) {
             throw new HttpException("invalid 'orderBy' parameter", 400);
@@ -58,9 +59,9 @@ class ProductController implements BaseController
         return new Response($response);
     }
 
-    public function delete($request): Response
+    public function delete(Request $request): Response
     {
-        $product = $this->productService->delete($request["variables"]["id"]);
+        $product = $this->productService->delete($request->getVariable("id"));
         $response = new ProductResponse($product);
         return new Response($response);
     }

@@ -31,4 +31,3 @@ return function (Container $container) {
     $router->patch("/categories/:id", [$categoryController, "update"]);
     $router->delete("/categories/:id", [$categoryController, "delete"]);
 };
-

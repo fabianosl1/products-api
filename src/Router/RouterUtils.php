@@ -1,24 +1,24 @@
 <?php
 namespace Router;
 
-use App\Dtos\Response;
-
 class RouterUtils
 {
 
-    public static function makeResponse($response, $status): void
+    public static function makeResponse(Response $response): void
     {
         header('X-powered-by: Micro router');
-        http_response_code($status);
+        http_response_code($response->getStatus());
 
-        if ($status < 500) {
+        if ($response->getStatus() < 500) {
             header('Content-Type: application/json');
-            echo json_encode($response);
+            echo json_encode($response->getBody());
         } else {
-            echo $response;
+            echo $response->getBody();
         }
     }
-
+    /**
+     * @return array<callable():Response,Request>
+     */
     public static function getRequest(Router $router): array {
         $uri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
@@ -33,11 +33,13 @@ class RouterUtils
             "params" => self::getParams($query)
         ];
 
+        $request = new Request(self::getBody() ?? [], $variables, self::getParams($query));
+
         return [$handler, $request];
     }
 
 
-    private static function getBody()
+    private static function getBody(): mixed
     {
         return json_decode(file_get_contents('php://input'), true);
     }

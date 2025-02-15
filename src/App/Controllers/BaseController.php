@@ -1,16 +1,17 @@
 <?php
 namespace App\Controllers;
-use App\Dtos\Response;
+use Router\Request;
+use Router\Response;
 
 interface BaseController
 {
-   public function create($request): Response;
+   public function create(Request $request): Response;
 
-    public function get($request): Response;
+    public function get(Request $request): Response;
 
-    public function update($request): Response;
+    public function update(Request $request): Response;
 
-    public function list($request): Response;
+    public function list(Request $request): Response;
 
-    public function delete($request): Response;
+    public function delete(Request $request): Response;
 }

@@ -1,26 +1,24 @@
 <?php
-
-namespace App\Dtos;
+namespace Router;
 
 class Response
 {
-
-    private BaseResponse $body;
+    private mixed $body;
 
     private int $status;
 
-    public function __construct(BaseResponse $body, int $status = 200)
+    public function __construct(mixed $body, int $status = 200)
     {
         $this->body = $body;
         $this->status = $status;
     }
 
-    public function getBody()
+    public function getBody(): mixed
     {
         return $this->body;
     }
 
-    public function getStatus()
+    public function getStatus(): int
     {
         return $this->status;
     }

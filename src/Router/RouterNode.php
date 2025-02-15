@@ -3,13 +3,13 @@ namespace Router;
 
 /*
  * Implementação baseada no framework Hono.js (primeiros commits)
- * 
+ *
  * As rotas são construidas em uma estrutura de arvore, cada nó possui:
  *  - parte do path
  *  - map <verbo http>:<handler>
  *  - sub nodes
  *
- * dado um path a função match encontra o RouterNode 
+ * dado um path a função match encontra o RouterNode
  * adequado e retorna o handler de acordo com o verbo http
  */
 class RouterNode
@@ -19,25 +19,29 @@ class RouterNode
     private array $nodes;
 
     /**
-     * @var callable[]
+     * @var callable():Response[]
      */
     private array $dispatcher;
 
     private bool $containsDynamic;
 
-    public function __construct($path)
+    public function __construct(string $path)
     {
         $this->pathPart = $path;
         $this->nodes = [];
         $this->dispatcher = [];
         $this->containsDynamic = false;
     }
-
+    /**
+     * @param callable(): Response $dispatcher
+     */
     private function addDispatcher(string $method, callable $dispatcher): void
     {
         $this->dispatcher[$method] = $dispatcher;
     }
-
+    /**
+     * @param callable(): Response $dispatcher
+     */
     public function insert(string $path, string $method, callable $dispatcher): void
     {
         if ($path == '/') {
@@ -63,7 +67,9 @@ class RouterNode
 
         $current->addDispatcher($method, $dispatcher);
     }
-
+    /**
+     * @return array<callable():Response,mixed>
+     */
     public function match(string $path, string $method): array
     {
         $variables = [];

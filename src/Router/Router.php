@@ -25,14 +25,11 @@ class Router
 
     public function run(): void
     {
-        [$body, $status] =$this->ensureSuccess([$this, 'dispatcher']);
-        RouterUtils::makeResponse($body, $status);
+        $response =$this->ensureSuccess([$this, 'dispatcher']);
+        RouterUtils::makeResponse($response);
     }
 
-    /**
-     * @throws NotFoundException
-     */
-    private function dispatcher()
+    private function dispatcher(): Response
     {
         [$handler, $request] = RouterUtils::getRequest($this);
 
@@ -43,47 +40,64 @@ class Router
         return $handler($request);
     }
 
-    private function ensureSuccess(callable $callback): array {
+    /**
+     * @param callable(): Response $callback
+     */
+    private function ensureSuccess(callable $callback): Response {
         try {
-            $response = $callback($this);
-            return [$response->getBody(), $response->getStatus()];
+            return $response = $callback($this);
         } catch (HttpException $exception) {
-            return [["message" => $exception->getMessage()], $exception->getStatus()];
+            return new Response($exception->getMessage(), $exception->getStatus());
         } catch (Throwable $exception) {
-            return [["message" => $exception->getMessage(),
-                "stack" => $exception->getTrace()] , 400];
+            return new Response($exception->getMessage(), 500);
         }
     }
 
+    /**
+     * @param callable(): Response $dispatcher
+     */
     public function post(string $path, callable $dispatcher): void
     {
         $this->node->insert($path, 'POST', $dispatcher);
     }
 
+    /**
+     * @param callable(): Response $dispatcher
+     */
     public function get(string $path, callable $dispatcher): void
     {
         $this->node->insert($path, 'GET', $dispatcher);
     }
 
+    /**
+     * @param callable(): Response $dispatcher
+     */
     public function put(string $path, callable $dispatcher): void
     {
         $this->node->insert($path, 'PUT', $dispatcher);
     }
 
+    /**
+     * @param callable(): Response $dispatcher
+     */
     public function patch(string $path, callable $dispatcher): void
     {
         $this->node->insert($path, 'PATCH', $dispatcher);
     }
 
+    /**
+     * @param callable(): Response $dispatcher
+     */
     public function delete(string $path, callable $dispatcher): void
     {
         $this->node->insert($path, 'DELETE', $dispatcher);
     }
 
+    /**
+     * @return array<callable(): Response,mixed>
+     */
     public function match(string $path, string $method): array
     {
         return $this->node->match($path, $method);
     }
-
 }
-
