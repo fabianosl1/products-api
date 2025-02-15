@@ -4,5 +4,5 @@ namespace App\Dtos;
 
 abstract class BaseRequest
 {
-    abstract public function __construct(array $body);
+    abstract public function __construct(mixed $body);
 }
