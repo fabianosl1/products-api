@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Dtos\Category\CreateCategoryRequest;
+use App\Dtos\Category\UpdateCategoryRequest;
 use App\Entities\Category;
 use App\Exceptions\HttpException;
 use App\Exceptions\NotFoundException;
@@ -49,10 +50,21 @@ class CategoryService
         return $category;
     }
 
-    public function delete(string $categoryId): void
+    public function update(int $categoryId, UpdateCategoryRequest $updateCategoryRequest): Category
+    {
+        $category = $this->categoryRepository->findById($categoryId);
+        $updateCategoryRequest->update($category);
+
+        $this->categoryRepository->save($category);
+
+        return $category;
+    }
+
+    public function delete(string $categoryId): Category
     {
         $category = $this->findById($categoryId);
         $this->categoryRepository->delete($category);
+        return $category;
     }
 
 }

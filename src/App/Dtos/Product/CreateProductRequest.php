@@ -22,7 +22,7 @@ class CreateProductRequest extends BaseRequest implements EntityProvider
     /**
      * @var int[]
      */
-    public array $tags;
+    public array $tagsIds;
 
     public function __construct($body)
     {
@@ -30,7 +30,7 @@ class CreateProductRequest extends BaseRequest implements EntityProvider
         $this->description = $body["description"];
         $this->price = $body["price"];
         $this->categoryId = $body["categoryId"];
-        $this->tags = $body["tags"];
+        $this->tagsIds = $body["tags"];
     }
 
     public function toEntity(): Product

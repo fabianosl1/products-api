@@ -37,7 +37,7 @@ class ProductService
 
         $tags = [];
 
-        foreach ($request->tags as $tag) {
+        foreach ($request->tagsIds as $tag) {
             $tags[]= $this->tagService->findById($tag);
         }
 

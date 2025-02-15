@@ -1,33 +1,58 @@
 <?php
 namespace App\Controllers;
 
+use App\Dtos\Category\CategoryResponse;
+use App\Dtos\Category\CreateCategoryRequest;
+use App\Dtos\Category\ListCategoryResponse;
+use App\Dtos\Category\UpdateCategoryRequest;
 use App\Dtos\Response;
+use App\Services\CategoryService;
 
 class CategoryController implements BaseController
 {
+    private CategoryService $categoryService;
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
 
     public function create($request): Response
     {
-        // TODO: Implement create() method.
+        $body = new CreateCategoryRequest($request["body"]);
+        $category = $this->categoryService->create($body);
+
+        $response = new CategoryResponse($category);
+        return new Response($response);
     }
 
     public function get($request): Response
     {
-        // TODO: Implement get() method.
+        $category = $this->categoryService->findById($request["variables"]["id"]);
+
+        $response = new CategoryResponse($category);
+        return new Response($response);
     }
 
     public function update($request): Response
     {
-        // TODO: Implement update() method.
+        $body = new UpdateCategoryRequest($request["body"]);
+        $category = $this->categoryService->update($request["variables"]["id"], $body);
+
+        $response = new CategoryResponse($category);
+        return new Response($response);
     }
 
     public function list($request): Response
     {
-        // TODO: Implement list() method.
+        $categories = $this->categoryService->findAll();
+        $response = new ListCategoryResponse($categories);
+        return new Response($response);
     }
 
     public function delete($request): Response
     {
-        // TODO: Implement delete() method.
+        $category = $this->categoryService->delete($request["variables"]["id"]);
+        $response = new CategoryResponse($category);
+        return new Response($response);
     }
 }
