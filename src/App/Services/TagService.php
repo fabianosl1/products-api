@@ -1,58 +1,71 @@
 <?php
 namespace App\Services;
 
-use App\Dtos\Category\CreateCategoryRequest;
-use App\Entities\Category;
+use App\Dtos\Tag\CreateTagRequest;
+use App\Dtos\Tag\UpdateTagRequest;
+use App\Entities\Tag;
 use App\Exceptions\HttpException;
 use App\Exceptions\NotFoundException;
-use App\Repositories\CategoryRepository;
+
+use App\Repositories\TagRepository;
 
 class TagService
 {
-    private CategoryRepository $categoryRepository;
+    private TagRepository $tagRepository;
 
-    public function __construct(CategoryRepository $categoryRepository)
+    public function __construct(TagRepository $categoryRepository)
     {
-        $this->categoryRepository = $categoryRepository;
+        $this->tagRepository = $categoryRepository;
     }
 
     /**
-     * @return Category[]
+     * @return Tag[]
      */
     public function findAll(): array
     {
-        return $this->categoryRepository->findAll();
+        return $this->tagRepository->findAll();
     }
 
-    public function findById($id): Category
+    public function findById($id): Tag
     {
-        $category = $this->categoryRepository->findById($id);
+        $tag = $this->tagRepository->findById($id);
 
-        if ($category === null) {
-            throw new NotFoundException("category not found");
+        if ($tag === null) {
+            throw new NotFoundException("tag not found");
         }
 
-        return $category;
+        return $tag;
     }
 
-    public function create(CreateCategoryRequest $createCategoryRequest): Category
+    public function create(CreateTagRequest $request): Tag
     {
-        $exist = $this->categoryRepository->findByName($createCategoryRequest->name);
+        $exist = $this->tagRepository->findByName($request->name);
 
         if ($exist) {
             throw new HttpException("category already exist", 400);
         }
 
-        $category = $createCategoryRequest->toEntity();
-        $this->categoryRepository->save($category);
+        $tag = $request->toEntity();
+        $this->tagRepository->save($tag);
 
-        return $category;
+        return $tag;
     }
 
-    public function delete(string $categoryId): void
+    public function update(int $id, UpdateTagRequest $request): Tag
     {
-        $category = $this->findById($categoryId);
-        $this->categoryRepository->delete($category);
+        $tag = $this->findById($id);
+
+        $request->update($tag);
+        $this->tagRepository->save($tag);
+
+        return $tag;
+    }
+
+    public function delete(int $tagId): Tag
+    {
+        $tag = $this->findById($tagId);
+        $this->tagRepository->delete($tag);
+        return $tag;
     }
 
 }
