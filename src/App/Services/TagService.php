@@ -41,8 +41,8 @@ class TagService
     {
         $exist = $this->tagRepository->findByName($request->name);
 
-        if ($exist) {
-            throw new HttpException("category already exist", 400);
+        if ($exist !== null) {
+            throw new HttpException("tag already exist", 400);
         }
 
         $tag = $request->toEntity();

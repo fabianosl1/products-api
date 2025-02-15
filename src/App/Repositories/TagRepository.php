@@ -7,7 +7,7 @@ interface TagRepository
 {
     public function findById($id): ?Tag;
 
-    public function findByName(string $name);
+    public function findByName(string $name): ?Tag;
 
     /**
      * @return Tag[]

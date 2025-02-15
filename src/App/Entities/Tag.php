@@ -15,7 +15,7 @@ class Tag
         $this->name = $name;
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
