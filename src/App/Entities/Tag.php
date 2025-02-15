@@ -29,4 +29,9 @@ class Tag
     {
         $this->name = $param;
     }
+
+    public function setId(mixed $id): void
+    {
+        $this->id = $id;
+    }
 }

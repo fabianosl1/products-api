@@ -87,12 +87,6 @@ class PostgresProductRepository implements ProductRepository
         }
     }
 
-    public function update(Product $product): void
-    {
-        $stmt = $this->db->getPdo()->prepare("UPDATE products set name = ?, description = ?, price = ?, likes = ?, category_id = ? where id = ? RETURNING *");
-        $stmt->execute([$product->getName(), $product->getDescription(), $product->getPrice(), $product->getLikes(), $product->getCategoryId(), $product->getId()]);
-    }
-
     private function create(Product $product): void
     {
         $stmt = $this->db->getPdo()->prepare("INSERT INTO products (name, description, price, likes, category_id) VALUES (?, ?, ?, ?, ?) RETURNING id, price");
@@ -102,6 +96,12 @@ class PostgresProductRepository implements ProductRepository
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $product->setId($row['id']);
         $product->setPrice($row['price']);
+    }
+
+    public function update(Product $product): void
+    {
+        $stmt = $this->db->getPdo()->prepare("UPDATE products set name = ?, description = ?, price = ?, likes = ?, category_id = ? where id = ?");
+        $stmt->execute([$product->getName(), $product->getDescription(), $product->getPrice(), $product->getLikes(), $product->getCategoryId(), $product->getId()]);
     }
 
     public function delete(Product $product): void
