@@ -3,10 +3,10 @@ namespace App\Repositories\Impl;
 
 use PDO;
 
-class PDOClient {
+class PDOClient extends PDO {
 
-    private PDO $pdo;
     private static self|null $instance = null;
+
     private function __construct() {
         $host = getenv('DB_HOST');
         $dbname = getenv('DB_NAME');
@@ -15,7 +15,7 @@ class PDOClient {
 
         $dns = "pgsql:host=$host;port=5432;dbname=$dbname";
 
-        $this->pdo = new PDO($dns, $user, $pass);
+        parent::__construct($dns, $user, $pass);
     }
 
     public static function getInstance(): self
@@ -27,8 +27,4 @@ class PDOClient {
         return self::$instance;
     }
 
-    public function getPdo()
-    {
-        return $this->pdo;
-    }
 }

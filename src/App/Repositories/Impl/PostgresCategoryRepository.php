@@ -9,11 +9,11 @@ use PDO;
 class PostgresCategoryRepository implements CategoryRepository
 {
 
-    private PDOClient $db;
+    private PDOClient $database;
 
     public function __construct()
     {
-        $this->db = PDOClient::getInstance();
+        $this->database = PDOClient::getInstance();
     }
 
     public function findById($id): ?Category
@@ -27,9 +27,9 @@ class PostgresCategoryRepository implements CategoryRepository
         return $this->fetchOne("name", $name);
     }
 
-    private function fetchOne(string $key, $value): ?Category
+    private function fetchOne(string $key, mixed $value): ?Category
     {
-        $stmt = $this->db->getPdo()->prepare("SELECT * FROM categories WHERE $key = ?");
+        $stmt = $this->database->prepare("SELECT * FROM categories WHERE $key = ?");
         $stmt->execute([$value]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -40,14 +40,14 @@ class PostgresCategoryRepository implements CategoryRepository
         return null;
     }
 
-    private function parse(array $row): Category
+    private function parse(mixed $row): Category
     {
         return new Category(id: $row['id'], name: $row['name']);
     }
 
     public function findAll(): array
     {
-        $stmt = $this->db->getPdo()->query("SELECT * FROM categories");
+        $stmt = $this->database->query("SELECT * FROM categories");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $categories = [];
@@ -69,8 +69,8 @@ class PostgresCategoryRepository implements CategoryRepository
 
     private function create(Category $category): void
     {
-        $stmt = $this->db->getPdo()->prepare("INSERT INTO categories (name) VALUES (?) RETURNING id");
 
+        $stmt = $this->database->prepare("INSERT INTO categories (name) VALUES (?) RETURNING id");
         $stmt->execute([$category->getName()]);
 
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -79,13 +79,13 @@ class PostgresCategoryRepository implements CategoryRepository
 
     public function update(Category $cate): void
     {
-        $stmt = $this->db->getPdo()->prepare("UPDATE categories set name = ? where id = ?");
+        $stmt = $this->database->prepare("UPDATE categories set name = ? where id = ?");
         $stmt->execute([$cate->getName(), $cate->getId()]);
     }
 
     public function delete(Category $category): void
     {
-        $stmt = $this->db->getPdo()->prepare("DELETE FROM categories WHERE id = ?");
+        $stmt = $this->database->prepare("DELETE FROM categories WHERE id = ?");
         $stmt->execute([$category->getId()]);
     }
 }

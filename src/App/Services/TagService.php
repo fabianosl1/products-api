@@ -25,8 +25,15 @@ class TagService
     {
         return $this->tagRepository->findAll();
     }
+    /**
+     * @return Tag[]
+     */
+    public function findByProductId(int $productId): array
+    {
+        return $this->tagRepository->findByProductId($productId);
+    }
 
-    public function findById($id): Tag
+    public function findById(int $id): Tag
     {
         $tag = $this->tagRepository->findById($id);
 

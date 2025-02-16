@@ -5,7 +5,7 @@ use App\Entities\Tag;
 
 interface TagRepository
 {
-    public function findById($id): ?Tag;
+    public function findById(int $id): ?Tag;
 
     public function findByName(string $name): ?Tag;
 
@@ -13,6 +13,11 @@ interface TagRepository
      * @return Tag[]
      */
     public function findAll(): array;
+
+    /**
+     * @return Tag[]
+     */
+    public function findByProductId(int $productId): array;
 
     public function save(Tag $tag): void;
 

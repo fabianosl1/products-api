@@ -76,7 +76,10 @@ class Product extends Entity
         return $this->category;
     }
 
-    public function getTags()
+    /**
+     * @@return Tag[]
+     */
+    public function getTags(): array
     {
         return $this->tags;
     }
@@ -110,7 +113,9 @@ class Product extends Entity
     {
         $this->category = $category;
     }
-
+    /**
+     * @@param Tag[] $tags
+     */
     public function setTags(array $tags): void
     {
         $this->tags = $tags;

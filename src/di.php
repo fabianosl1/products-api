@@ -17,21 +17,15 @@ return function () {
     $builder = new \DI\ContainerBuilder();
 
     $builder->addDefinitions([
-        ProductRepository::class => \DI\autowire(PostgresProductRepository::class),
-        ProductController::class => \DI\autowire(ProductController::class),
-        ProductService::class => \DI\autowire(ProductService::class),
-    ]);
-
-    $builder->addDefinitions([
-        CategoryRepository::class => \DI\autowire(PostgresCategoryRepository::class),
-        CategoryController::class => \DI\autowire(CategoryController::class),
-        CategoryService::class => \DI\autowire(CategoryService::class),
-    ]);
-
-    $builder->addDefinitions([
         TagRepository::class => \DI\autowire(PostgresTagRepository::class),
-        TagController::class => \DI\autowire(TagController::class),
+        ProductRepository::class => \DI\autowire(PostgresProductRepository::class),
+        CategoryRepository::class => \DI\autowire(PostgresCategoryRepository::class),
+        ProductService::class => \DI\autowire(ProductService::class),
+        CategoryService::class => \DI\autowire(CategoryService::class),
         TagService::class => \DI\autowire(TagService::class),
+        TagController::class => \DI\autowire(TagController::class),
+        CategoryController::class => \DI\autowire(CategoryController::class),
+        ProductController::class => \DI\autowire(ProductController::class),
     ]);
 
     return $builder->build();

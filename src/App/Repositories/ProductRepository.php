@@ -5,17 +5,19 @@ use App\Entities\Product;
 
 interface ProductRepository
 {
-    public function findById($id): ?Product;
+    public function findById(int $id): ?Product;
 
-    public function findByName(string $name);
+    public function findByName(string $name): ?Product;
 
     /**
-     * 
      * @return Product[]
      */
     public function findAll(string|null $orderBy): array;
 
-    public function findByCategory(int $categoryId): array;
+    /**
+     * @return Product[]
+     */
+    public function findByCategoryId(int $categoryId): array;
 
     public function save(Product $product): void;
 

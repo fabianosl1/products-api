@@ -5,9 +5,9 @@ use App\Entities\Category;
 
 interface CategoryRepository
 {
-    public function findById($id): ?Category;
+    public function findById(int $id): ?Category;
 
-    public function findByName(string $name);
+    public function findByName(string $name): ?Category;
 
     /**
      * @return Category[]

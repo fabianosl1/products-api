@@ -3,17 +3,26 @@
 namespace App\Repositories\Impl;
 
 use App\Entities\Product;
+use App\Repositories\CategoryRepository;
 use App\Repositories\ProductRepository;
+use App\Repositories\TagRepository;
+use Exception;
 use PDO;
 
 class PostgresProductRepository implements ProductRepository
 {
 
-    private PDOClient $db;
+    private PDOClient $database;
 
-    public function __construct()
+    private TagRepository $tagRepository;
+
+    private CategoryRepository $categoryRepository;
+
+    public function __construct(TagRepository $tagRepository, CategoryRepository $categoryRepository)
     {
-        $this->db = PDOClient::getInstance();
+        $this->database = PDOClient::getInstance();
+        $this->tagRepository = $tagRepository;
+        $this->categoryRepository = $categoryRepository;
     }
 
     public function findById($id): ?Product
@@ -26,14 +35,22 @@ class PostgresProductRepository implements ProductRepository
         return $this->fetchOne("name", $name);
     }
 
-    private function fetchOne(string $key, $value): ?Product
+    private function fetchOne(string $key, mixed $value): ?Product
     {
-        $stmt = $this->db->getPdo()->prepare("SELECT * FROM products WHERE $key = ?");
+        $stmt = $this->database->prepare("SELECT * FROM products WHERE $key = ?");
         $stmt->execute([$value]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
-            return $this->parse($row);
+            $product = $this->parse($row);
+
+            $tags = $this->tagRepository->findByProductId($product->getId());
+            $product->setTags($tags);
+
+            $category = $this->categoryRepository->findById($product->getCategoryId());
+            $product->setCategory($category);
+
+            return $product;
         }
 
         return null;
@@ -41,21 +58,25 @@ class PostgresProductRepository implements ProductRepository
 
     public function findAll(?string $orderBy): array
     {
-        $stmt = $this->db->getPdo()->query("SELECT * FROM products ORDER BY $orderBy ASC");
+        $stmt = $this->database->query("SELECT * FROM products ORDER BY $orderBy ASC");
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return $this->parseMany($rows);
     }
-
-    public function findByCategory(int $categoryId): array
+    /**
+     * @return Product[]
+     */
+    public function findByCategoryId(int $categoryId): array
     {
-        $stmt = $this->db->getPdo()->prepare("SELECT * FROM products WHERE category_id = ?");
+        $stmt = $this->database->prepare("SELECT * FROM products WHERE category_id = ?");
         $stmt->execute([$categoryId]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return $this->parseMany($rows);
     }
-
-    private function parseMany(array $rows): array
+    /**
+     * @return Product[]
+     */
+    private function parseMany(mixed $rows): array
     {
         $result = [];
 
@@ -66,7 +87,7 @@ class PostgresProductRepository implements ProductRepository
         return $result;
     }
 
-    private function parse($row): Product
+    private function parse(mixed $row): Product
     {
         return new Product(
             name: $row["name"],
@@ -89,26 +110,36 @@ class PostgresProductRepository implements ProductRepository
 
     private function create(Product $product): void
     {
-        $stmt = $this->db->getPdo()->prepare("INSERT INTO products (name, description, price, likes, category_id) VALUES (?, ?, ?, ?, ?) RETURNING id, price");
+        try {
+            $this->database->beginTransaction();
+            $stmt = $this->database->prepare("INSERT INTO products (name, description, price, likes, category_id) VALUES (?, ?, ?, ?, ?) RETURNING id, price");
+            $stmt->execute([$product->getName(), $product->getDescription(), $product->getPrice(), $product->getLikes(), $product->getCategory()->getId()]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $stmt->execute([$product->getName(), $product->getDescription(), $product->getPrice(), $product->getLikes(), $product->getCategory()->getId()]);
+            $product->setId($row['id']);
+            $product->setPrice($row['price']);
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $product->setId($row['id']);
-        $product->setPrice($row['price']);
-    }
+            foreach ($product->getTags() as $tag) {
+                $stmtTag = $this->database->prepare("INSERT INTO products_tags (product_id, tag_id) VALUES (?, ?)");
+                $stmtTag->execute([$product->getId(), $tag->getId()]);
+            }
+
+            $this->database->commit();
+        } catch (Exception $exception) {
+            $this->database->rollBack();
+            throw $exception;
+        }
+   }
 
     public function update(Product $product): void
     {
-        $stmt = $this->db->getPdo()->prepare("UPDATE products set name = ?, description = ?, price = ?, likes = ?, category_id = ? where id = ?");
+        $stmt = $this->database->prepare("UPDATE products set name = ?, description = ?, price = ?, likes = ?, category_id = ? where id = ?");
         $stmt->execute([$product->getName(), $product->getDescription(), $product->getPrice(), $product->getLikes(), $product->getCategoryId(), $product->getId()]);
     }
 
     public function delete(Product $product): void
     {
-        $stmt = $this->db->getPdo()->prepare("DELETE FROM products WHERE id = ?");
+        $stmt = $this->database->prepare("DELETE FROM products WHERE id = ?");
         $stmt->execute([$product->getId()]);
     }
-
-
 }

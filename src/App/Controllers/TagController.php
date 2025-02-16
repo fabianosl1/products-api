@@ -37,7 +37,14 @@ class TagController implements BaseController
 
     public function list(Request $request): Response
     {
-        $tags = $this->tagService->findAll();
+        $productId = $request->getQuery("productId");
+
+        if ($productId === null) {
+            $tags = $this->tagService->findAll();
+        } else {
+            $tags = $this->tagService->findByProductId($productId);
+        }
+
         $response = new ListTagResponse($tags);
 
         return new Response($response);

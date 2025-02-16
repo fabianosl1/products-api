@@ -71,10 +71,6 @@ class ProductService
             throw new NotFoundException("Product not found");
         }
 
-        $category = $this->categoryService->findById($product->getCategoryId());
-        $product->setCategory($category);
-        $product->setTags([]);
-
         return $product;
     }
 
