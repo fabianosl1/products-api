@@ -28,6 +28,7 @@ return function (Container $container) {
     $router->get("/categories", [$categoryController, "list"]);
     $router->post("/categories", [$categoryController, "create"]);
     $router->get("/categories/:id", [$categoryController, "get"]);
+    $router->get("/categories/:id/products", [$categoryController, "listProducts"]);
     $router->patch("/categories/:id", [$categoryController, "update"]);
     $router->delete("/categories/:id", [$categoryController, "delete"]);
 };

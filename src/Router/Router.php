@@ -47,7 +47,7 @@ class Router
         try {
             return $response = $callback($this);
         } catch (HttpException $exception) {
-            return new Response($exception->getMessage(), $exception->getStatus());
+            return new Response($exception->getBody(), $exception->getStatus());
         } catch (Throwable $exception) {
             return new Response($exception->getMessage(), 500);
         }
