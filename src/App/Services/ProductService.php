@@ -63,6 +63,14 @@ class ProductService
         return $this->productRepository->findAll($orderBy);
     }
 
+    /**
+     * @return Product[]
+     */
+    public function listByCategoryId(int $categoryId): array
+    {
+        return $this->productRepository->findByCategoryId($categoryId);
+    }
+
     public function findById(int $id): Product
     {
         $product = $this->productRepository->findById($id);

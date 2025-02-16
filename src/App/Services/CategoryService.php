@@ -7,6 +7,7 @@ use App\Entities\Category;
 use App\Exceptions\HttpException;
 use App\Exceptions\NotFoundException;
 use App\Repositories\CategoryRepository;
+use Exception;
 
 class CategoryService
 {
@@ -25,7 +26,7 @@ class CategoryService
         return $this->categoryRepository->findAll();
     }
 
-    public function findById($id): Category
+    public function findById(int $id): Category
     {
         $category = $this->categoryRepository->findById($id);
 
@@ -63,7 +64,13 @@ class CategoryService
     public function delete(string $categoryId): Category
     {
         $category = $this->findById($categoryId);
-        $this->categoryRepository->delete($category);
+
+        try {
+            $this->categoryRepository->delete($category);
+        } catch (Exception $e) {
+            throw new HttpException("ainda existe produtos associados", 400);
+        }
+
         return $category;
     }
 
