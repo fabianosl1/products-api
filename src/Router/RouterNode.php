@@ -51,7 +51,7 @@ class RouterNode
         $current = $this;
 
         foreach ($this->explodePath($path) as $pathPart) {
-            $next = $current->nodes[$pathPart];
+            $next = $current->nodes[$pathPart] ?? null;
 
             if (str_contains($pathPart, ':')) {
                 $current->containsDynamic = true;
@@ -79,7 +79,7 @@ class RouterNode
         $index = 0;
 
         foreach ($paths as $pathPart) {
-            $next = $current->nodes[$pathPart];
+            $next = $current->nodes[$pathPart] ?? null;
 
             if ($current->containsDynamic) {
                 $child = reset($current->nodes);

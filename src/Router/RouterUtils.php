@@ -27,7 +27,11 @@ class RouterUtils
         $uri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
 
-        [$path, $query] = explode('?', $uri);
+        $result = explode('?', $uri);
+
+        $path = $result[0];
+
+        $query = $result[1] ?? null;
 
         [$handler, $variables] = $router->match($path, $method);
 
