@@ -8,3 +8,5 @@ services:
       POSTGRES_PASSWORD: local
       POSTGRES_USER: local
       POSTGRES_DB: products
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d
