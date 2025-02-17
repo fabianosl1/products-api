@@ -1,12 +1,23 @@
 <?php
+
+use App\Repositories\Impl\PostgresProductRepository;
+use App\Repositories\ProductRepository;
+use App\Services\CategoryService;
 use App\Services\ProductService;
 use App\Controllers\ProductController;
-use \DI\Container;
 
 return function () {
-    $container = new Container();
+    $builder = new \DI\ContainerBuilder();
 
-    $container->set('ProductService', ProductService::class);
-    $container->set('ProductController', ProductController::class);
-    return $container;
+    $builder->addDefinitions([
+        ProductRepository::class => \DI\autowire(PostgresProductRepository::class),
+        ProductController::class => \DI\autowire(ProductController::class),
+        ProductService::class => \DI\autowire(ProductService::class),
+    ]);
+
+    $builder->addDefinitions([
+        \App\Services\CategoryService::class => \DI\autowire(CategoryService::class),
+    ]);
+
+    return $builder->build();
 };

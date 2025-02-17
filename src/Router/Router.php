@@ -1,6 +1,10 @@
 <?php
 namespace Router;
 
+use App\Exceptions\HttpException;
+use App\Exceptions\NotFoundException;
+use Throwable;
+
 class Router
 {
     private RouterNode $node;
@@ -16,8 +20,39 @@ class Router
         if (self::$instance === null) {
             self::$instance = new Router();
         }
-
         return self::$instance;
+    }
+
+    public function run(): void
+    {
+        [$body, $status] =$this->ensureSuccess([$this, 'dispatcher']);
+        RouterUtils::makeResponse($body, $status);
+    }
+
+    /**
+     * @throws NotFoundException
+     */
+    private function dispatcher()
+    {
+        [$handler, $request] = RouterUtils::getRequest($this);
+
+        if ($handler === null) {
+            throw new NotFoundException("No route found");
+        }
+
+        return $handler($request);
+    }
+
+    private function ensureSuccess(callable $callback): array {
+        try {
+            $response = $callback($this);
+            return [$response->getBody(), $response->getStatus()];
+        } catch (HttpException $exception) {
+            return [["message" => $exception->getMessage()], $exception->getStatus()];
+        } catch (Throwable $exception) {
+            return [["message" => $exception->getMessage(),
+                "stack" => $exception->getTrace()] , 400];
+        }
     }
 
     public function post(string $path, callable $dispatcher): void
@@ -45,48 +80,10 @@ class Router
         $this->node->insert($path, 'DELETE', $dispatcher);
     }
 
-    public function handler(): void
+    public function match(string $path, string $method): array
     {
-        $uri = $_SERVER['REQUEST_URI'];
-        $method = $_SERVER['REQUEST_METHOD'];
-
-        [$path, $query] = explode('?', $uri);
-
-        [$handler, $variables] = $this->node->match($path, $method);
-
-        if ($handler === null) {
-            RouterUtils::makeResponse(["message" => "router not found"], 404);
-        }
-
-        $response = $handler([
-            "body" => RouterUtils::getBody(),
-            "variables" => $variables,
-            "params" => $this->getParams($query)
-        ]);
-
-        RouterUtils::makeResponse($response->getBody(), $response->getStatus());
+        return $this->node->match($path, $method);
     }
 
-    private function getParams(string|null $query): array
-    {
-        $params = [];
-
-        if ($query === null) {
-            return $params;
-        }
-
-        foreach (explode("&", $query) as $param) {
-            $param = trim($param);
-
-            if (empty($param)) {
-                continue;
-            }
-
-            [$key, $value] = explode("=", $param);
-
-            $params[$key] = $value;
-        }
-        return $params;
-    }
 }
 

@@ -18,6 +18,9 @@ class RouterNode
 
     private array $nodes;
 
+    /**
+     * @var callable[]
+     */
     private array $dispatcher;
 
     private bool $containsDynamic;

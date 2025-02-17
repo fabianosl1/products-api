@@ -13,7 +13,5 @@ return function (Container $container) {
     $router->get("/products/:id", [$productController, "get"]);
     $router->patch("/products/:id", [$productController, "update"]);
     $router->delete("/products/:id", [$productController, "delete"]);
-
-    return $router;
 };
 
