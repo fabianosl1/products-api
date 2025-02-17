@@ -7,14 +7,18 @@ use App\Entities\Tag;
 use App\Exceptions\HttpException;
 use App\Exceptions\NotFoundException;
 
+use App\Logger;
 use App\Repositories\TagRepository;
 
 class TagService
 {
+    private Logger $logger;
+
     private TagRepository $tagRepository;
 
     public function __construct(TagRepository $categoryRepository)
     {
+        $this->logger = new Logger(self::class);
         $this->tagRepository = $categoryRepository;
     }
 
@@ -38,6 +42,7 @@ class TagService
         $tag = $this->tagRepository->findById($id);
 
         if ($tag === null) {
+            $this->logger->info("tag id:$id not found");
             throw new NotFoundException("tag not found");
         }
 
@@ -49,6 +54,7 @@ class TagService
         $exist = $this->tagRepository->findByName($request->name);
 
         if ($exist !== null) {
+            $this->logger->info("tag name:$request->name already exist");
             throw new HttpException("tag already exist", 400);
         }
 

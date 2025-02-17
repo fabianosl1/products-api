@@ -4,11 +4,14 @@ use App\Dtos\Product\CreateProductRequest;
 use App\Dtos\Product\UpdateProductRequest;
 use App\Entities\Product;
 use App\Exceptions\HttpException;
+use App\Logger;
 use App\Repositories\ProductRepository;
 use App\Exceptions\NotFoundException;
 
 class ProductService
 {
+    private Logger $logger;
+
     private ProductRepository $productRepository;
 
     private CategoryService $categoryService;
@@ -17,6 +20,7 @@ class ProductService
 
     public function __construct(ProductRepository $productRepository, CategoryService $categoryService, TagService $tagService)
     {
+        $this->logger = new Logger(self::class);
         $this->productRepository = $productRepository;
         $this->categoryService = $categoryService;
         $this->tagService = $tagService;
@@ -27,6 +31,7 @@ class ProductService
         $exist = $this->productRepository->findByName($request->name);
 
         if ($exist) {
+            $this->logger->info("Product name:$request->name already exist");
             throw new HttpException("Product with the same name already exist", 400);
         }
 
@@ -76,6 +81,7 @@ class ProductService
         $product = $this->productRepository->findById($id);
 
         if ($product === null) {
+            $this->logger->info("product id:$id not found");
             throw new NotFoundException("Product not found");
         }
 

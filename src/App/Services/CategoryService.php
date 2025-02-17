@@ -6,15 +6,19 @@ use App\Dtos\Category\UpdateCategoryRequest;
 use App\Entities\Category;
 use App\Exceptions\HttpException;
 use App\Exceptions\NotFoundException;
+use App\Logger;
 use App\Repositories\CategoryRepository;
 use Exception;
 
 class CategoryService
 {
+    private Logger $logger;
+
     private CategoryRepository $categoryRepository;
 
     public function __construct(CategoryRepository $categoryRepository)
     {
+        $this->logger = new Logger(self::class);
         $this->categoryRepository = $categoryRepository;
     }
 
@@ -31,6 +35,7 @@ class CategoryService
         $category = $this->categoryRepository->findById($id);
 
         if ($category === null) {
+            $this->logger->info("category id:$id not found");
             throw new NotFoundException("category not found");
         }
 
@@ -42,6 +47,7 @@ class CategoryService
         $exist = $this->categoryRepository->findByName($createCategoryRequest->name);
 
         if ($exist) {
+            $this->logger->info("category name:$createCategoryRequest->name already exist");
             throw new HttpException("category already exist", 400);
         }
 
@@ -68,7 +74,8 @@ class CategoryService
         try {
             $this->categoryRepository->delete($category);
         } catch (Exception $e) {
-            throw new HttpException("ainda existe produtos associados", 400);
+            $this->logger->info("delete category id:$categoryId");
+            throw new HttpException("there are still products associates", 400);
         }
 
         return $category;

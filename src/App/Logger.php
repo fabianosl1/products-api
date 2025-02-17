@@ -23,7 +23,7 @@ class Logger
     private function log(int $level, string $levelStr, string $message): void
     {
         $now = date("D M j H:i:s Y");
-        openlog("[$now] [$this->prefix]", LOG_NDELAY|LOG_PERROR, LOG_SYSLOG);
+        openlog("[$now] $this->prefix", LOG_NDELAY|LOG_PERROR, LOG_SYSLOG);
         syslog($level, "$levelStr $message");
         closelog();
     }
