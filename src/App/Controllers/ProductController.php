@@ -9,7 +9,7 @@ use App\Dtos\Product\ProductResponse;
 use Router\Response;
 use Router\Request;
 
-class ProductController implements BaseController
+class ProductController
 {
     private ProductService $productService;
 

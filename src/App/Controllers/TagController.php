@@ -9,7 +9,7 @@ use App\Dtos\Tag\TagResponse;
 use App\Dtos\Tag\UpdateTagRequest;
 use App\Services\TagService;
 
-class TagController implements BaseController
+class TagController
 {
     private TagService $tagService;
 

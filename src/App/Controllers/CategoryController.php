@@ -11,7 +11,7 @@ use App\Services\ProductService;
 use Router\Request;
 use Router\Response;
 
-class CategoryController implements BaseController
+class CategoryController
 {
     private CategoryService $categoryService;
 
