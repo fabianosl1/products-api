@@ -46,7 +46,7 @@ class CategoryService
     {
         $exist = $this->categoryRepository->findByName($createCategoryRequest->name);
 
-        if ($exist) {
+        if ($exist !== null) {
             $this->logger->info("category name:$createCategoryRequest->name already exist");
             throw new HttpException("category already exist", 400);
         }

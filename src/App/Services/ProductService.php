@@ -30,7 +30,7 @@ class ProductService
     {
         $exist = $this->productRepository->findByName($request->name);
 
-        if ($exist) {
+        if ($exist !== null) {
             $this->logger->info("Product name:$request->name already exist");
             throw new HttpException("Product with the same name already exist", 400);
         }
