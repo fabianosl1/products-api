@@ -1,15 +1,16 @@
 <?php
+ini_set('display_errors', 0);
 
 use Router\Router;
 
 require __DIR__ . "/../vendor/autoload.php";
 
-$di = require __DIR__ . "/../src/di.php";
-$routes = require __DIR__ . "/../src/routes.php";
-
-$container = $di();
-
-$routes($container);
-
 $router = Router::getInstance();
-$router->run();
+
+$router->run(function () {
+    $di = require __DIR__ . "/../src/di.php";
+    $routes = require __DIR__ . "/../src/routes.php";
+
+    $container = $di();
+    $routes($container);
+});
