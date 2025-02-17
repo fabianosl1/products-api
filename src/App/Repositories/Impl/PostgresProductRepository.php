@@ -131,11 +131,24 @@ class PostgresProductRepository implements ProductRepository
         }
    }
 
-    public function update(Product $product): void
-    {
-        $stmt = $this->database->prepare("UPDATE products set name = ?, description = ?, price = ?, likes = ?, category_id = ? where id = ?");
-        $stmt->execute([$product->getName(), $product->getDescription(), $product->getPrice(), $product->getLikes(), $product->getCategoryId(), $product->getId()]);
-    }
+   public function update(Product $product): void
+   {
+       try {
+           $this->database->beginTransaction();
+           $stmt = $this->database->prepare("UPDATE products set name = ?, description = ?, price = ?, likes = ?, category_id = ? where id = ?");
+           $stmt->execute([$product->getName(), $product->getDescription(), $product->getPrice(), $product->getLikes(), $product->getCategoryId(), $product->getId()]);
+
+           foreach ($product->getTags() as $tag) {
+               $stmtTag = $this->database->prepare("INSERT INTO products_tags (product_id, tag_id) VALUES (?, ?) ON CONFLICT (product_id, tag_id) DO NOTHING");
+               $stmtTag->execute([$product->getId(), $tag->getId()]);
+           }
+
+           $this->database->commit();
+       } catch (Exception $exception) {
+           $this->database->rollBack();
+           throw $exception;
+       }
+   }
 
     public function delete(Product $product): void
     {

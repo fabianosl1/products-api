@@ -27,6 +27,17 @@ class ProductController
         return new Response($response, 201);
     }
 
+    public function associateTags(Request $request): Response
+    {
+        $body = $request->getBody();
+        $productId = $request->getVariable("id");
+
+        $product = $this->productService->associateTags($productId, $body["tagsIds"]);
+        $response = new ProductResponse($product);
+
+        return new Response($response);
+    }
+
     public function get(Request $request): Response
     {
         $product = $this->productService->findById($request->getVariable("id"));

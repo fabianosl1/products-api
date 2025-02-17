@@ -23,7 +23,7 @@ class Product extends Entity
      * Summary of tags
      * @var Tag[]
      */
-    private array $tags;
+    private array $tags = [];
 
     public function __construct(
         string $name,

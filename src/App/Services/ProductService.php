@@ -40,16 +40,43 @@ class ProductService
         $product = $request->toEntity();
         $product->setCategory($category);
 
-        $tags = [];
-
-        foreach ($request->tagsIds as $tag) {
-            $tags[]= $this->tagService->findById($tag);
-        }
-
-        $product->setTags($tags);
+        $this->fetchTags($product, $request->agsIds);
 
         $this->productRepository->save($product);
         return $product;
+    }
+    /**
+     * @param int[] $tagsIds
+     */
+    public function associateTags(int $productId, array $tagsIds): Product
+    {
+        $product = $this->findById($productId);
+        $this->fetchTags($product, $tagsIds);
+        $this->productRepository->save($product);
+        return $product;
+    }
+    /**
+     * @param int[] $tagsIds
+     * @return Tags[]
+     */
+     private function fetchTags(Product $product, array $tagsIds): void
+     {
+         $map = [];
+         $tags = $product->getTags();
+
+         foreach ($tags as $tag) {
+            $map[$tag->getId()] = $tag;
+        }
+
+        foreach ($tagsIds as $tagId) {
+            $stored = $map[$tagId] ?? null;
+
+            if ($stored === null) {
+                $tags[]= $this->tagService->findById($tagId);
+            }
+        }
+
+        $product->setTags($tags);
     }
 
     public function update(int $productId, UpdateProductRequest $request): Product
@@ -80,7 +107,8 @@ class ProductService
     {
         $product = $this->productRepository->findById($id);
 
-        if ($product === null) {
+        if ($product === null)
+        {
             $this->logger->info("product id:$id not found");
             throw new NotFoundException("Product not found");
         }

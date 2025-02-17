@@ -68,7 +68,8 @@ class Router
         } catch (HttpException $exception) {
             return new Response($exception->getBody(), $exception->getStatus());
         } catch (Throwable $exception) {
-            return new Response($exception->getMessage(), 500);
+            $this->logger->critical($exception->getMessage());
+            return new Response("internal server error", 500);
         }
     }
 
