@@ -21,7 +21,7 @@ class PDOClient extends PDO {
     public static function getInstance(): self
     {
         if (self::$instance === null) {
-            self::$instance = new PDOClient();
+            self::$instance = new self();
         }
 
         return self::$instance;

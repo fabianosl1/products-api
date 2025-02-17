@@ -14,7 +14,7 @@ class Router
 
     private RouterNode $node;
 
-    private static Router|null $instance = null;
+    private static self|null $instance = null;
 
     private function __construct()
     {
@@ -22,11 +22,12 @@ class Router
         $this->logger = new Logger(Router::class);
     }
 
-    public static function getInstance(): Router
+    public static function getInstance(): self
     {
         if (self::$instance === null) {
-            self::$instance = new Router();
+            self::$instance = new self();
         }
+
         return self::$instance;
     }
 
