@@ -4,6 +4,9 @@ Api rest para gerenciamento de produtos, tags e categorias.
 
 `pdo` e `php-di` são as unicas libs utilizadas.
 
+- Optei por utilizar o servidor embutido do PHP.
+- Para implementar o router me baseei no Hono.js
+
 > estrutura de pastas:
 ```bash
 /src
@@ -12,12 +15,12 @@ Api rest para gerenciamento de produtos, tags e categorias.
 |---|---Dtos/
 |---|---Entities/
 |---|---Exceptions/
-|---|---Repositories/
+|---|---repositories/
+|---|---|---Impl/
 |---|---Services/
-|---|--Logger.php
-|---Router/            # roteador
-|---di.php             # resolução de dependencias
-|---routes.php         # definição das rotas
+|---Router/             # roteador
+|---di.php              # resolução de dependencias
+|---routes.php          # definição das rotas
 ```
 ## Develop
 > http://localhost:8080
