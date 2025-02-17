@@ -19,10 +19,8 @@ create table if not exists products(
 );
 
 create table if not exists products_tags(
-    product_id  int not null references products,
-    tag_id      int not null references categories,
+    product_id  int not null references products on delete cascade,
+    tag_id      int not null references categories on delete cascade,
 
     primary key (product_id, tag_id)
 );
-
-
