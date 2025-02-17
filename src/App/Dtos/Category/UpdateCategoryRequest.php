@@ -3,12 +3,11 @@ namespace App\Dtos\Category;
 
 use App\Entities\Category;
 use App\Dtos\BaseRequest;
-use App\Entities\EntityProvider;
 
 /**
  * @extends BaseRequest<Category>
  */
-class CreateCategoryRequest extends BaseRequest implements EntityProvider
+class UpdateCategoryRequest extends BaseRequest
 {
     public string $name;
 
@@ -17,8 +16,8 @@ class CreateCategoryRequest extends BaseRequest implements EntityProvider
         $this->name = $body["name"];
     }
 
-    public function toEntity(): Category
+    public function update(Category $category): void
     {
-        return new Category(null, $this->name);
+        $category->setName($this->name ?? $category->getName());
     }
 }

@@ -24,4 +24,9 @@ class Tag
     {
         return $this->name;
     }
+
+    public function setName(string $param): void
+    {
+        $this->name = $param;
+    }
 }

@@ -2,19 +2,20 @@
 
 namespace App\Dtos\Product;
 
+use App\Entities\EntityProvider;
 use App\Entities\Product;
 use App\Dtos\BaseRequest;
 
 /**
  * @extends BaseRequest<Product>
  */
-class CreateProductRequest extends BaseRequest
+class CreateProductRequest extends BaseRequest implements EntityProvider
 {
     public string $name;
 
     public string $description;
 
-    public string $price;
+    public float $price;
 
     public int $categoryId;
 
@@ -35,9 +36,10 @@ class CreateProductRequest extends BaseRequest
     public function toEntity(): Product
     {
         return new Product(
-            $this->name,
-            $this->description,
-            $this->price
+            name: $this->name,
+            description: $this->description,
+            price: $this->price,
+            categoryId: $this->categoryId
         );
     }
 }

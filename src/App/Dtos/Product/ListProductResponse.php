@@ -16,7 +16,13 @@ class ListProductResponse extends BaseResponse {
     public function __construct($products)
     {
         foreach ($products as $product) {
-            $this->products[]= new ProductResponse($product);
+            $this->products[]= [
+                'id' => $product->getId(),
+                'name' => $product->getName(),
+                'price' => $product->getPrice(),
+                'description' => $product->getDescription(),
+                'categoryId' => $product->getCategoryId(),
+            ];
         }
     }
 }

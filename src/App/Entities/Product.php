@@ -11,30 +11,44 @@ class Product extends Entity
 
     private string $description;
 
-    private string $price;
+    private float $price;
 
-    private Category|null $category;
+    private int $likes;
+
+    private int $categoryId;
+
+    private Category $category;
 
     /**
      * Summary of tags
      * @var Tag[]
      */
-    private array|null $tags;
+    private array $tags;
 
     public function __construct(
         string $name,
         string $description,
-        string $price,
-        Category $category = null,
-        array $tags  = null,
+        float $price,
+        int $categoryId,
+        int $likes = 0,
         int|null $id = null
     ) {
         $this->id = $id;
         $this->name = $name;
         $this->description = $description;
         $this->price = $price;
-        $this->category = $category;
-        $this->tags = $tags;
+        $this->likes = $likes;
+        $this->categoryId = $categoryId;
+    }
+
+    public function like(): void
+    {
+        $this->likes++;
+    }
+
+    public function getLikes(): int
+    {
+        return $this->likes;
     }
 
     public function getId(): int|null
@@ -52,7 +66,7 @@ class Product extends Entity
         return $this->description;
     }
 
-    public function getPrice(): string
+    public function getPrice(): float
     {
         return $this->price;
     }
@@ -65,5 +79,45 @@ class Product extends Entity
     public function getTags()
     {
         return $this->tags;
+    }
+
+    public function getCategoryId(): int
+    {
+        return $this->categoryId;
+    }
+
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function setDescription(string $description): void
+    {
+        $this->description = $description;
+    }
+
+    public function setPrice(float $price): void
+    {
+        $this->price = $price;
+    }
+
+    public function setCategoryId(int $categoryId): void
+    {
+        $this->categoryId = $categoryId;
+    }
+
+    public function setCategory(Category $category): void
+    {
+        $this->category = $category;
+    }
+
+    public function setTags(array $tags): void
+    {
+        $this->tags = $tags;
+    }
+
+    public function setId(mixed $id): void
+    {
+        $this->id = $id;
     }
 }

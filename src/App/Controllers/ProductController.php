@@ -1,11 +1,12 @@
 <?php
 namespace App\Controllers;
 
+use App\Dtos\Product\CreateProductRequest;
 use App\Dtos\Product\ListProductResponse;
+use App\Exceptions\HttpException;
 use App\Services\ProductService;
 use App\Dtos\Product\ProductResponse;
 use App\Dtos\Response;
-
 
 class ProductController
 {
@@ -18,9 +19,11 @@ class ProductController
 
     public function create($request): Response
     {
-        $product = $this->productService->create($request);
+        $body = new CreateProductRequest($request["body"]);
+        $product = $this->productService->create($body);
         $response = new ProductResponse($product);
-        return new Response($response);
+
+        return new Response($response, 201);
     }
 
     public function get($request): Response
@@ -43,7 +46,14 @@ class ProductController
 
     public function list($request): Response
     {
-        $products = $this->productService->listAll($request["params"]["orderBy"]);
+        $available = ["name", "price", "likes"];
+        $orderBy = $request["params"]["orderBy"] ?? "name";
+
+        if (!in_array($orderBy, $available, true)) {
+            throw new HttpException("invalid 'orderBy' parameter", 400);
+        }
+
+        $products = $this->productService->listAll($orderBy);
         $response = new ListProductResponse($products);
         return new Response($response);
     }

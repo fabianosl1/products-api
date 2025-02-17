@@ -17,7 +17,7 @@ class ProductResponse extends BaseResponse
 
     public string $description;
 
-    public string $price;
+    public float $price;
 
     public CategoryResponse $category;
 

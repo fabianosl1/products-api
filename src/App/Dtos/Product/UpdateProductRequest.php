@@ -6,13 +6,13 @@ use App\Entities\Product;
 
 class UpdateProductRequest extends BaseRequest
 {
-    public string $name;
+    public ?string $name;
 
-    public string $description;
+    public ?string $description;
 
-    public string $price;
+    public ?float $price;
 
-    public int $categoryId;
+    public ?int $categoryId;
 
     public function __construct(array $body)
     {
@@ -22,12 +22,10 @@ class UpdateProductRequest extends BaseRequest
         $this->categoryId = $body["categoryId"];
     }
 
-    public function toEntity(): Product
-    {
-        return new Product(
-            $this->name,
-            $this->description,
-            $this->price
-        );
+    public function update(Product $product): void {
+        $product->setName($this->name ?? $product->getName());
+        $product->setDescription($this->description ?? $product->getDescription());
+        $product->setPrice($this->price ?? $product->getPrice());
+        $product->setCategoryId($this->categoryId ?? $product->getCategoryId());
     }
 }

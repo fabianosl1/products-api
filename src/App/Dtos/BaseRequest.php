@@ -2,9 +2,7 @@
 
 namespace App\Dtos;
 
-use App\Entities\EntityProvider;
-
-abstract class BaseRequest implements EntityProvider
+abstract class BaseRequest
 {
     abstract public function __construct(array $body);
 }

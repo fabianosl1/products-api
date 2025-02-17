@@ -24,4 +24,9 @@ class Category extends Entity
     {
         return $this->name;
     }
+
+    public function setName(string $param): void
+    {
+        $this->name = $param;
+    }
 }

@@ -1,14 +1,13 @@
 <?php
 namespace App\Dtos\Tag;
 
-use App\Entities\EntityProvider;
-use App\Entities\Tag;
 use App\Dtos\BaseRequest;
+use App\Entities\Tag;
 
 /**
  * @extends BaseRequest<Tag>
  */
-class CreateTagRequest extends BaseRequest implements EntityProvider
+class UpdateTagRequest extends BaseRequest
 {
     public string $name;
 
@@ -17,8 +16,8 @@ class CreateTagRequest extends BaseRequest implements EntityProvider
         $this->name = $body["name"];
     }
 
-    public function toEntity(): Tag
+    public function update(Tag $tag): void
     {
-        return new Tag(null, $this->name);
+        $tag->setName($this->name ?? $tag->getName());
     }
 }
