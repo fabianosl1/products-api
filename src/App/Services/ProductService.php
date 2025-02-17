@@ -40,7 +40,7 @@ class ProductService
         $product = $request->toEntity();
         $product->setCategory($category);
 
-        $this->fetchTags($product, $request->agsIds);
+        $this->fetchTags($product, $request->tagsIds);
 
         $this->productRepository->save($product);
         return $product;

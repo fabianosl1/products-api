@@ -31,7 +31,7 @@ class CreateProductRequest extends BaseRequest implements EntityProvider
         $this->description = $body["description"];
         $this->price = $body["price"];
         $this->categoryId = $body["categoryId"];
-        $this->tagsIds = $body["tags"];
+        $this->tagsIds = $body["tagsIds"];
     }
 
     public function toEntity(): Product
