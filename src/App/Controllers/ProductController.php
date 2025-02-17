@@ -3,6 +3,7 @@ namespace App\Controllers;
 
 use App\Dtos\Product\CreateProductRequest;
 use App\Dtos\Product\ListProductResponse;
+use App\Dtos\Product\UpdateProductRequest;
 use App\Exceptions\HttpException;
 use App\Services\ProductService;
 use App\Dtos\Product\ProductResponse;
@@ -47,9 +48,11 @@ class ProductController
 
     public function update(Request $request): Response
     {
+        $body = new UpdateProductRequest($request->getBody());
+
         $product = $this->productService->update(
             $request->getVariable("id"),
-            $request->getBody()
+            $body
         );
 
         $response = new ProductResponse($product);

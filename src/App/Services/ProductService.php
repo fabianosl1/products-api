@@ -83,6 +83,12 @@ class ProductService
     {
         $product = $this->findById($productId);
         $request->update($product);
+
+        if ($request->categoryId !== null) {
+            $category = $this->categoryService->findById($request->categoryId);
+            $product->setCategory($category);
+        }
+
         $this->productRepository->save($product);
         return $product;
     }
@@ -107,8 +113,7 @@ class ProductService
     {
         $product = $this->productRepository->findById($id);
 
-        if ($product === null)
-        {
+        if ($product === null) {
             $this->logger->info("product id:$id not found");
             throw new NotFoundException("Product not found");
         }

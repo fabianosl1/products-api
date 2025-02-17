@@ -14,7 +14,7 @@ class UpdateProductRequest extends BaseRequest
 
     public ?int $categoryId;
 
-    public function __construct(array $body)
+    public function __construct(mixed $body)
     {
         $this->name = $body["name"];
         $this->description = $body["description"];
