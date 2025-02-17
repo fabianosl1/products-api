@@ -6,20 +6,24 @@ class RouterUtils
 
     public static function makeResponse(Response $response): void
     {
-        header('X-powered-by: Micro router');
         http_response_code($response->getStatus());
 
-        if ($response->getStatus() < 500) {
+        $body = $response->getBody();
+
+        if (!is_string($body)) {
             header('Content-Type: application/json');
-            echo json_encode($response->getBody());
+            $body = json_encode($response->getBody());
         } else {
-            echo $response->getBody();
+            header('Content-Type: text/plain');
         }
+
+        echo $body;
     }
     /**
      * @return array<callable():Response,Request>
      */
-    public static function getRequest(Router $router): array {
+    public static function getRequest(Router $router): array
+    {
         $uri = $_SERVER['REQUEST_URI'];
         $method = $_SERVER['REQUEST_METHOD'];
 

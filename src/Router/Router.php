@@ -3,16 +3,23 @@ namespace Router;
 
 use App\Exceptions\HttpException;
 use App\Exceptions\NotFoundException;
+
+use App\Logger;
+
 use Throwable;
 
 class Router
 {
+    private Logger $logger;
+
     private RouterNode $node;
+
     private static Router|null $instance = null;
 
     private function __construct()
     {
-        $this->node = new RouterNode('/');
+        $this->node = new RouterNode("/");
+        $this->logger = new Logger(Router::class);
     }
 
     public static function getInstance(): Router
@@ -23,13 +30,25 @@ class Router
         return self::$instance;
     }
 
-    public function run(): void
+    /**
+     * @@param callable():void $init
+     */
+    public function run(callable $init): void
     {
-        $response =$this->ensureSuccess([$this, 'dispatcher']);
+        try {
+            $init();
+        } catch (Throwable $error) {
+            $this->logger->critical($error->getMessage());
+            $response = new Response("Server not initialized", 500);
+            RouterUtils::makeResponse($response);
+            return;
+        }
+
+        $response = $this->ensureSuccess([$this, 'dispatch']);
         RouterUtils::makeResponse($response);
     }
 
-    private function dispatcher(): Response
+    private function dispatch(): Response
     {
         [$handler, $request] = RouterUtils::getRequest($this);
 
