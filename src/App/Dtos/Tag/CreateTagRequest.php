@@ -7,6 +7,7 @@ use App\Dtos\BaseRequest;
 
 /**
  * @extends BaseRequest<Tag>
+ * @implements EntityProvider<Tag>
  */
 class CreateTagRequest extends BaseRequest implements EntityProvider
 {

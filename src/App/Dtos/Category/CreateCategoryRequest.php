@@ -7,6 +7,7 @@ use App\Entities\EntityProvider;
 
 /**
  * @extends BaseRequest<Category>
+ * @implements EntityProvider<Category>
  */
 class CreateCategoryRequest extends BaseRequest implements EntityProvider
 {

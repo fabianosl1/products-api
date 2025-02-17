@@ -8,6 +8,7 @@ use App\Dtos\BaseRequest;
 
 /**
  * @extends BaseRequest<Product>
+ * @implements EntityProvider<Product>
  */
 class CreateProductRequest extends BaseRequest implements EntityProvider
 {
