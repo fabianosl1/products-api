@@ -1,4 +1,4 @@
-## Resume:
+## Resumo:
 
 Api rest para gerenciamento de produtos, tags e categorias.
 
@@ -22,7 +22,7 @@ Api rest para gerenciamento de produtos, tags e categorias.
 |---di.php              # resolução de dependencias
 |---routes.php          # definição das rotas
 ```
-## Develop
+## Dev:
 > http://localhost:8080
 ```bash
 docker compose up
@@ -36,3 +36,6 @@ export $(cat .env.local)
 
 php -S localhost:8080 -t ./public
 ```
+## Rotas:
+
+na pasta `docs` tem um [collection](./docs/api-products.postman_collection.json) do postman.
