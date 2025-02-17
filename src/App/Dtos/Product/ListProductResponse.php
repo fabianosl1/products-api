@@ -19,8 +19,9 @@ class ListProductResponse extends BaseResponse {
             $this->products[]= [
                 'id' => $product->getId(),
                 'name' => $product->getName(),
-                'price' => $product->getPrice(),
                 'description' => $product->getDescription(),
+                'price' => $product->getPrice(),
+                'likes' => $product->getLikes(),
                 'categoryId' => $product->getCategoryId(),
             ];
         }

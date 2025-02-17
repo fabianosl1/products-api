@@ -19,6 +19,8 @@ class ProductResponse extends BaseResponse
 
     public float $price;
 
+    public int $likes;
+
     public CategoryResponse $category;
 
     /**
@@ -32,6 +34,7 @@ class ProductResponse extends BaseResponse
         $this->name = $product->getName();
         $this->description = $product->getDescription();
         $this->price = $product->getPrice();
+        $this->likes = $product->getLikes();
 
         $this->category = new CategoryResponse($product->getCategory());
 

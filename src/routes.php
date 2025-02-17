@@ -17,6 +17,7 @@ return function (Container $container) {
     $router->post("/products", [$productController, "create"]);
     $router->get("/products/:id", [$productController, "get"]);
     $router->patch("/products/:id", [$productController, "update"]);
+    $router->patch("/products/:id/like", [$productController, "like"]);
     $router->delete("/products/:id", [$productController, "delete"]);
 
     $router->get("/tags", [$tagController, "list"]);

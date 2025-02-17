@@ -65,4 +65,11 @@ class ProductController implements BaseController
         $response = new ProductResponse($product);
         return new Response($response);
     }
+
+    public function like(Request $request): Response
+    {
+        $product = $this->productService->likeProduct($request->getVariable("id"));
+        $response = new ProductResponse($product);
+        return new Response($response);
+    }
 }
